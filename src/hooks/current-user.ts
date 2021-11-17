@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react';
-import { CurrentUser } from '../types';
+import { CurrentUser, CurrentUserState } from '../types';
 
 export function useCurrentUser() {
     const actionTypes = {
@@ -11,12 +11,6 @@ export function useCurrentUser() {
         signOut: '[Current User] Sign Out',
         signOut_Success: '[Current User] Sign Out (Success)',
         signOut_Failure: '[Current User] Sign Out (Failure)'
-    };
-
-    type CurrentUserState = {
-        data: CurrentUser | null;
-        loading: boolean;
-        error: string | null;
     };
 
     // get initial data from localstorage if user is already signed in

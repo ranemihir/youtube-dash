@@ -2,7 +2,7 @@ import { Video } from './../types';
 
 export const VideoCard = (props: { video: Video; }) => {
     return (
-        <div className='card'>
+        <div className='card rounded-0'>
             <img src={props.video.thumbnailUrl} className='card-img-top' alt={props.video.title + ' thumbnail'} />
             <div className='card-body'>
                 <div className='card-title'>{props.video.title}</div>

@@ -23,14 +23,14 @@ export const GoogleSignIn = (props: { currentUserActions: any; }) => {
     };
 
     return (
-        <div className="m-4">
-            <GoogleLogin
-                clientId='738803615765-8n769e8kuitvs86nmab9fpssa8t57pad.apps.googleusercontent.com'
-                buttonText='Sign In'
-                scope='https://www.googleapis.com/auth/youtube.readonly'
-                onSuccess={onSuccess}
-                onFailure={onFailure}
-            />
-        </div>
+        <GoogleLogin
+            clientId='738803615765-8n769e8kuitvs86nmab9fpssa8t57pad.apps.googleusercontent.com'
+            buttonText='Sign In with Google'
+            theme='dark'
+            // isSignedIn={true}
+            scope='https://www.googleapis.com/auth/youtube.readonly'
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+        />
     );
 };

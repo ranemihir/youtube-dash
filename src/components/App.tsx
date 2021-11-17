@@ -10,10 +10,10 @@ export const App = () => {
 
     return (
         <Router>
-            <NavBar />
+            <NavBar currentUserState={currentUserState} currentUserActions={currentUserActions} />
             <div className='container'>
                 <Routes>
-                    <Route path='/' element={<Home authToken={authToken} currentUserActions={currentUserActions} />} />
+                    <Route path='/' element={<Home authToken={authToken} />} />
                     <Route path='/:id' element={<Dashboard authToken={authToken} />} />
                 </Routes>
             </div>
