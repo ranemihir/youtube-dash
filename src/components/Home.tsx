@@ -25,22 +25,30 @@ export const Home = (props: { authToken: string | null; }) => {
     };
 
     return (
-        <div className="row mt-5 justify-content-center">
-            <div className="col-md-8 ">
-                <form className="d-flex" onSubmit={handleSubmit}>
-                    <input onChange={handleChange} value={query} className="form-control me-2 rounded-0 bg-light" type="search" placeholder="Channel Name" aria-label="Search" />
-                    <button className="btn btn-outline-danger rounded-0" type="submit">Search</button>
-                </form>
-            </div>
-            <div className="col-md-8">
-                <div className="my-5">
-                    {
-                        channels.map((channel: Channel) => (
-                            <ChannelCard key={channel.id} channel={channel} />
-                        ))
-                    }
+        <>
+            <div className='container-fluid bg-light border-bottom' style={{ height: 240 }}>
+                <div className="row justify-content-center">
+                    <div className="col-md-7 mt-5">
+                        <form className="d-flex mt-5" onSubmit={handleSubmit}>
+                            <input onChange={handleChange} value={query} className="form-control me-2 rounded-0 border border-2 border-secondary" type="search" placeholder="CHANNEL NAME" aria-label="Search" style={{ fontWeight: 500, letterSpacing: 1 }} />
+                            <button className="btn btn-outline-danger rounded-0 border border-danger border-2" type="submit" style={{ fontWeight: 500, letterSpacing: 1 }}>SEARCH</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div className='container'>
+                <div className="row justify-content-center">
+                    <div className="col-md-8">
+                        <div className="my-5">
+                            {
+                                channels.map((channel: Channel) => (
+                                    <ChannelCard key={channel.id} channel={channel} />
+                                ))
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 };

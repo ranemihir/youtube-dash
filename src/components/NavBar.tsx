@@ -5,7 +5,7 @@ import { GoogleSignOut } from "./GoogleSignOut";
 
 export const NavBar = (props: { currentUserState: CurrentUserState, currentUserActions: any; }) => {
     return (
-        <nav className="navbar navbar-light bg-white border shadow-sm">
+        <nav className="navbar navbar-light bg-white border-bottom shadow-sm">
             <div className="container-fluid px-3">
                 <Link className="navbar-brand d-flex flex-rw align-items-center" to='/'>
                     <img src="/youtube-logo.png" alt="YouTube Logo" width='48' />
