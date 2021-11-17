@@ -14,7 +14,7 @@ export const App = () => {
             <NavBar currentUserState={currentUserState} currentUserActions={currentUserActions} />
             <Routes>
                 <Route path='/' element={<Home authToken={authToken} searchState={searchState} />} />
-                <Route path='/:id' element={<Dashboard authToken={authToken} />} />
+                <Route path='/:channelId' element={<Dashboard authToken={authToken} />} />
             </Routes>
         </Router>
     );

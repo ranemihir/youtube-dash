@@ -139,8 +139,9 @@ export async function getPlaylistItems(params: { uploadsPlayListId: string, auth
 	const url = new URL(YOUTUBE_URLS.playlist);
 
 	url.searchParams.append('part', 'snippet');
+	url.searchParams.append('part', 'id');
 	url.searchParams.append('maxResults', '50');
-	url.searchParams.append('playListId', params.uploadsPlayListId);
+	url.searchParams.append('playlistId', params.uploadsPlayListId);
 
 	const headers = new Headers();
 	headers.set('Accept', 'application/json');
@@ -150,11 +151,11 @@ export async function getPlaylistItems(params: { uploadsPlayListId: string, auth
 	const data: any = await res.json();
 
 	if (data) {
-		return res.body.items.map((item: any): Video => {
-			const { snippet, resourceId } = data.item;
+		return data.items.map((item: any): Video => {
+			const { snippet } = item;
 
 			return {
-				id: resourceId.videoId,
+				id: snippet.resourceId.videoId,
 				title: snippet.title,
 				publishedAt: snippet.publishedAt,
 				thumbnailUrl: snippet.thumbnails.default.url
@@ -169,7 +170,7 @@ export async function getVideoStats(params: { videoId: string, authToken: string
 	const url = new URL(YOUTUBE_URLS.video);
 
 	url.searchParams.append('part', 'statistics');
-	url.searchParams.append('videoId', params.videoId);
+	url.searchParams.append('id', params.videoId);
 
 	const headers = new Headers();
 	headers.set('Accept', 'application/json');
@@ -178,7 +179,7 @@ export async function getVideoStats(params: { videoId: string, authToken: string
 	const res: any = await fetch(url.toString(), { method: 'GET', headers });
 	const data: any = await res.json();
 
-	if (res.ok) {
+	if (data) {
 		const { viewCount, likeCount, dislikeCount, commentCount } = data.items[0].statistics;
 
 		return {
