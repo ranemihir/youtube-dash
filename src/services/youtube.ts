@@ -76,18 +76,21 @@ export async function searchChannels(params: { query: string, maxResults: number
 	url.searchParams.append('maxResults', params.maxResults.toString());
 	url.searchParams.append('q', params.query);
 	url.searchParams.append('type', 'channel');
-	url.searchParams.append('key', params.authToken);
 
-	let res: any = await fetch(url.toString(), { method: 'GET' });
-	res = await res.json();
+	const headers = new Headers();
+	headers.set('Accept', 'application/json');
+	headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	if (res.ok) {
-		const channels: Channel[] = await res.body.items.map((item: any): Channel => {
-			const { channelId, title, publishedAt, description, thumbnails } = item.snippet;
+	const res: any = await fetch(url.toString(), { method: 'GET', headers });
+	const data: any = await res.json();
+
+	if (data) {
+		const channels: Channel[] = await data.items.map((item: any): Channel => {
+			const { channelId, channelTitle, publishedAt, description, thumbnails } = item.snippet;
 
 			return {
 				id: channelId,
-				name: title,
+				name: channelTitle,
 				description,
 				publishedAt,
 				thumbnailUrl: thumbnails.default.url
@@ -108,13 +111,16 @@ export async function getChannelDetails(params: { channelId: string, authToken: 
 	url.searchParams.append('part', 'statistics');
 
 	url.searchParams.append('id', params.channelId);
-	url.searchParams.append('key', params.authToken);
 
-	let res: any = await fetch(url.toString(), { method: 'GET' });
-	res = await res.json();
+	const headers = new Headers();
+	headers.set('Accept', 'application/json');
+	headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	if (res.ok) {
-		const { contentDetails, statistics, topicDetails } = res.body.items[0];
+	const res: any = await fetch(url.toString(), { method: 'GET', headers });
+	const data: any = await res.json();
+
+	if (data) {
+		const { contentDetails, statistics, topicDetails } = data.items[0];
 		const { viewCount, subscriberCount, videoCount } = statistics;
 
 		return {
@@ -135,14 +141,17 @@ export async function getPlaylistItems(params: { uploadsPlayListId: string, auth
 	url.searchParams.append('part', 'snippet');
 	url.searchParams.append('maxResults', '50');
 	url.searchParams.append('playListId', params.uploadsPlayListId);
-	url.searchParams.append('key', params.authToken);
 
-	let res: any = await fetch(url.toString(), { method: 'GET' });
-	res = await res.json();
+	const headers = new Headers();
+	headers.set('Accept', 'application/json');
+	headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	if (res.ok) {
+	const res: any = await fetch(url.toString(), { method: 'GET', headers });
+	const data: any = await res.json();
+
+	if (data) {
 		return res.body.items.map((item: any): Video => {
-			const { snippet, resourceId } = res.body.item;
+			const { snippet, resourceId } = data.item;
 
 			return {
 				id: resourceId.videoId,
@@ -161,13 +170,16 @@ export async function getVideoStats(params: { videoId: string, authToken: string
 
 	url.searchParams.append('part', 'statistics');
 	url.searchParams.append('videoId', params.videoId);
-	url.searchParams.append('key', params.authToken);
 
-	let res: any = await fetch(url.toString(), { method: 'GET' });
-	res = await res.json();
+	const headers = new Headers();
+	headers.set('Accept', 'application/json');
+	headers.set('Authorization', 'Bearer ' + params.authToken);
+
+	const res: any = await fetch(url.toString(), { method: 'GET', headers });
+	const data: any = await res.json();
 
 	if (res.ok) {
-		const { viewCount, likeCount, dislikeCount, commentCount } = res.body.items[0].statistics;
+		const { viewCount, likeCount, dislikeCount, commentCount } = data.items[0].statistics;
 
 		return {
 			viewCount: Number(viewCount),

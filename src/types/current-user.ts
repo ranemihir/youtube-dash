@@ -1,7 +1,8 @@
 export type CurrentUser = {
     id: string;
+    email: string;
     firstName: string;
     lastName: string;
     photoUrl: string;
-    authtoken: string;
+    authToken: string;
 }
