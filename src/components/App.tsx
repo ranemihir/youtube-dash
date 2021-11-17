@@ -1,13 +1,22 @@
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useCurrentUser } from '../hooks';
+import { Dashboard } from './Dashboard';
+import { Home } from './Home';
+import { NavBar } from './NavBAr';
 
 export const App = () => {
+    const { currentUserActions, currentUserState } = useCurrentUser();
+    const authToken = currentUserState.data.authtoken;
+
     return (
-        <Router>
-            <div>
-                <Route path='/' component={} />
-                <Route path='/:id' component={Dashboard} />
-            </div>
-        </Router>
+        <>
+            <NavBar />
+            <Router>
+                <Routes>
+                    <Route path='/' element={<Home authToken={authToken} />} />
+                    <Route path='/:id' element={<Dashboard authToken={authToken} />} />
+                </Routes>
+            </Router>
+        </>
     );
 }; 
