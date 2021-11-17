@@ -4,8 +4,7 @@ export type Channel = {
     description: string;
     thumbnailUrl: string;
     publishedAt: Date;
-
-    
+    details?: ChannelDetails;
 };
 
 export type ChannelDetails = {

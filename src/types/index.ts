@@ -1,6 +1,7 @@
 import { Channel, ChannelDetails } from './channel';
 import { CurrentUser, CurrentUserState } from './current-user';
 import { Video, VideoStats } from './video';
+import { OverallAnalytics } from './analytics';
 
 export type {
     Channel,
@@ -8,5 +9,6 @@ export type {
     Video,
     VideoStats,
     CurrentUser,
-    CurrentUserState
+    CurrentUserState,
+    OverallAnalytics
 };
