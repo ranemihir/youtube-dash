@@ -13,30 +13,28 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
     const { channelId } = useParams();
 
     const [channel, setChannel] = useState<Channel>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [videos, setVideos] = useState<Video[]>([]);
     const [overallAnalytics, setOverallAnalytics] = useState<OverallAnalytics[]>();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [chartDataPoints, setChartDataPoints] = useState<DataPoint[]>();
-
-    const channelData: Channel = props.getChannel(channelId);
-
-    if (!channelData) {
-        // TODO: fetch
-        console.log('channelData not present');
-    } else {
-        setChannel(channelData);
-    }
+    const [dataPoints, setDataPoints] = useState<DataPoint[]>();
 
     useEffect(() => {
         (async () => {
+            const channelData: Channel = props.getChannel(channelId);
+
+            if (!channelData) {
+                // TODO: fetch
+                console.log('channelData not present');
+            } else {
+                setChannel(channelData);
+            }
+
             const channelDetails: ChannelDetails = await youtubeService.getChannelDetails({ channelId, authToken });
 
             setChannel((c: Channel) => ({
                 ...c,
                 details: channelDetails
             }));
-
-            console.log('channel state =>', channel);
 
             const videosData: Video[] = await youtubeService.getPlaylistItems({
                 uploadsPlayListId: channelDetails.uploadsPlaylistId,
@@ -56,33 +54,33 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
 
             setVideos(videosData);
 
-            const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channel, videos);
-            const chartDataPointsData: DataPoint[] = analyticsService.getDataPoints(channel, videos);
+            const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channelDetails, videosData);
+            const chartDataPoints: DataPoint[] = analyticsService.getDataPoints(channelDetails, videosData);
 
             setOverallAnalytics(overallAnalayticsData);
-            setChartDataPoints(chartDataPointsData);
+            setDataPoints(chartDataPoints);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [channelId, authToken]);
+    }, []);
 
     return (
         <div className="container-fluid">
             <div className="row">
                 <div className="col-3">
                     {
-                        (channel && channel != null) &&
+                        (channel && channel != null && channel.details) &&
                         <div className="card">
-                            <img src={channel.thumbnailUrl} className="card-img-top rounded-circle shadow-sm" alt={channel.name + ' thumbnail'} />
+                            <img src={channel.thumbnailUrl} className="card-img-top rounded-circle p-4" alt={channel.name + ' thumbnail'} />
                             <div className="card-body">
                                 <h3 className="card-title">{channel.name}</h3>
                                 <p className="card-text">
-                                    Subscribers <strong>{channel.details.subscriberCount}</strong>
+                                    Subscribers <strong>{channel.details.subscriberCount.toLocaleString()}</strong>
                                 </p>
                                 <p className="card-text">
-                                    Total Views <strong>{channel.details.totalViewCount}</strong>
+                                    Total Views <strong>{channel.details.totalViewCount.toLocaleString()}</strong>
                                 </p>
                                 <p className="card-text">
-                                    Uploaded Videos <strong>{channel.details.videoCount}</strong>
+                                    Uploaded Videos <strong>{channel.details.videoCount.toLocaleString()}</strong>
                                 </p>
                             </div>
                         </div>
@@ -93,10 +91,11 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                         (overallAnalytics && overallAnalytics != null) &&
                         <div className="row">
                             {
+                                (overallAnalytics && overallAnalytics != null) &&
                                 overallAnalytics.map((overallAnalyticsData: OverallAnalytics) => {
                                     return (
                                         <div className="col-3">
-                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalaytics={overallAnalyticsData} />
+                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalytics={overallAnalyticsData} />
                                         </div>
                                     );
                                 })
@@ -107,7 +106,8 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
             </div>
             <div className="row">
                 {
-                    chartDataPoints.map((chartDataPoint: DataPoint) => {
+                    (dataPoints && dataPoints != null) &&
+                    dataPoints.map((chartDataPoint: DataPoint) => {
                         return (
                             <div className="col-6">
                                 <ChartCard key={chartDataPoint.name} dataPoint={chartDataPoint} />
