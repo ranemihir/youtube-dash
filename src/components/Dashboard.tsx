@@ -20,45 +20,43 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
 
     useEffect(() => {
         (async () => {
-            const channelData: Channel = props.getChannel(channelId);
+            try {
+                let channelData: Channel = props.getChannel(channelId);
 
-            if (!channelData) {
-                // TODO: fetch
-                console.log('channelData not present');
-            } else {
+                if (!channelData) {
+                    channelData = await youtubeService.getChannelDetails({ channelId, authToken, fetchChannel: true }) as Channel;
+                } else {
+                    channelData.details = await youtubeService.getChannelDetails({ channelId, authToken, fetchChannel: false }) as ChannelDetails;
+                }
+
                 setChannel(channelData);
-            }
 
-            const channelDetails: ChannelDetails = await youtubeService.getChannelDetails({ channelId, authToken });
-
-            setChannel((c: Channel) => ({
-                ...c,
-                details: channelDetails
-            }));
-
-            const videosData: Video[] = await youtubeService.getPlaylistItems({
-                uploadsPlayListId: channelDetails.uploadsPlaylistId,
-                authToken
-            });
-
-            for (let i = 0; i < videosData.length; i++) {
-                const video = videosData[i];
-
-                const videoStats: VideoStats = await youtubeService.getVideoStats({
-                    videoId: video.id,
+                const videosData: Video[] = await youtubeService.getPlaylistItems({
+                    uploadsPlayListId: channelData.details.uploadsPlaylistId,
                     authToken
                 });
 
-                video.stats = videoStats;
-            };
+                for (let i = 0; i < videosData.length; i++) {
+                    const video = videosData[i];
 
-            setVideos(videosData);
+                    const videoStats: VideoStats = await youtubeService.getVideoStats({
+                        videoId: video.id,
+                        authToken
+                    });
 
-            const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channelDetails, videosData);
-            const chartDataPoints: DataPoint[] = analyticsService.getDataPoints(channelDetails, videosData);
+                    video.stats = videoStats;
+                };
 
-            setOverallAnalytics(overallAnalayticsData);
-            setDataPoints(chartDataPoints);
+                setVideos(videosData);
+
+                const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channel.details, videosData);
+                const chartDataPoints: DataPoint[] = analyticsService.getDataPoints(channel.details, videosData);
+
+                setOverallAnalytics(overallAnalayticsData);
+                setDataPoints(chartDataPoints);
+            } catch (err) {
+                console.error(err);
+            }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -106,7 +104,10 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                     }
                 </div>
             </div>
-            <hr className="dropdown-divider mb-4 text-muted" />
+            {
+                (channel && channel != null && channel.details) &&
+                <hr className="dropdown-divider mb-4 text-muted" />
+            }
             <div className="row mb-4">
                 {
                     (dataPoints && dataPoints != null) &&

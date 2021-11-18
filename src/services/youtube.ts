@@ -70,125 +70,162 @@ const topics: { [key: string]: string; } = {
 };
 
 export async function searchChannels(params: { query: string, maxResults: number, authToken: string; }): Promise<Channel[]> {
-	const url = new URL(YOUTUBE_URLS.search);
+	try {
+		const url = new URL(YOUTUBE_URLS.search);
 
-	url.searchParams.append('part', 'snippet');
-	url.searchParams.append('maxResults', params.maxResults.toString());
-	url.searchParams.append('q', params.query);
-	url.searchParams.append('type', 'channel');
+		url.searchParams.append('part', 'snippet');
+		url.searchParams.append('maxResults', params.maxResults.toString());
+		url.searchParams.append('q', params.query);
+		url.searchParams.append('type', 'channel');
 
-	const headers = new Headers();
-	headers.set('Accept', 'application/json');
-	headers.set('Authorization', 'Bearer ' + params.authToken);
+		const headers = new Headers();
+		headers.set('Accept', 'application/json');
+		headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	const res: any = await fetch(url.toString(), { method: 'GET', headers });
-	const data: any = await res.json();
+		const res: any = await fetch(url.toString(), { method: 'GET', headers });
+		const data: any = await res.json();
 
-	if (data) {
-		const channels: Channel[] = await data.items.map((item: any): Channel => {
-			const { channelId, channelTitle, publishedAt, description, thumbnails } = item.snippet;
+		if (data) {
+			const channels: Channel[] = await data.items.map((item: any): Channel => {
+				const { channelId, channelTitle, publishedAt, description, thumbnails } = item.snippet;
+
+				return {
+					id: channelId,
+					name: channelTitle,
+					description,
+					publishedAt,
+					thumbnailUrl: thumbnails.default.url
+				};
+			});
+
+			return channels;
+		} else {
+			throw new Error('Error occurred while fetching data');
+		}
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+export async function getChannelDetails(params: { channelId: string, authToken: string, fetchChannel: boolean; }): Promise<ChannelDetails | Channel> {
+	try {
+		const url = new URL(YOUTUBE_URLS.channel);
+
+		if (params.fetchChannel) {
+			url.searchParams.append('part', 'snippet');
+		}
+
+		url.searchParams.append('part', 'contentDetails');
+		url.searchParams.append('part', 'topicDetails');
+		url.searchParams.append('part', 'statistics');
+
+		url.searchParams.append('id', params.channelId);
+
+		const headers = new Headers();
+		headers.set('Accept', 'application/json');
+		headers.set('Authorization', 'Bearer ' + params.authToken);
+
+		const res: any = await fetch(url.toString(), { method: 'GET', headers });
+		const data: any = await res.json();
+
+		if (data) {
+			const { contentDetails, statistics, topicDetails } = data.items[0];
+			const { viewCount, subscriberCount, videoCount } = statistics;
+
+			const details = {
+				tags: topicDetails.topicIds.map((topicId: string): string => topics[topicId]),
+				uploadsPlaylistId: contentDetails.relatedPlaylists.uploads,
+				totalViewCount: Number(viewCount),
+				subscriberCount: Number(subscriberCount),
+				videoCount: Number(videoCount)
+			};
+
+			if (!params.fetchChannel) {
+				return details;
+			}
+
+			const { snippet } = data.items[0];
+
+			const { channelId, channelTitle, publishedAt, description, thumbnails } = snippet;
 
 			return {
 				id: channelId,
 				name: channelTitle,
 				description,
 				publishedAt,
-				thumbnailUrl: thumbnails.default.url
+				thumbnailUrl: thumbnails.default.url,
+				details
 			};
-		});
-
-		return channels;
-	} else {
-		throw new Error('Error occurred while fetching data');
-	}
-};
-
-export async function getChannelDetails(params: { channelId: string, authToken: string; }): Promise<ChannelDetails> {
-	const url = new URL(YOUTUBE_URLS.channel);
-
-	url.searchParams.append('part', 'contentDetails');
-	url.searchParams.append('part', 'topicDetails');
-	url.searchParams.append('part', 'statistics');
-
-	url.searchParams.append('id', params.channelId);
-
-	const headers = new Headers();
-	headers.set('Accept', 'application/json');
-	headers.set('Authorization', 'Bearer ' + params.authToken);
-
-	const res: any = await fetch(url.toString(), { method: 'GET', headers });
-	const data: any = await res.json();
-
-	if (data) {
-		const { contentDetails, statistics, topicDetails } = data.items[0];
-		const { viewCount, subscriberCount, videoCount } = statistics;
-
-		return {
-			tags: topicDetails.topicIds.map((topicId: string): string => topics[topicId]),
-			uploadsPlaylistId: contentDetails.relatedPlaylists.uploads,
-			totalViewCount: Number(viewCount),
-			subscriberCount: Number(subscriberCount),
-			videoCount: Number(videoCount)
-		};
-	} else {
-		throw new Error('Error occurred while fetching data');
+		} else {
+			throw new Error('Error occurred while fetching data');
+		}
+	} catch (err) {
+		console.error(err);
 	}
 };
 
 export async function getPlaylistItems(params: { uploadsPlayListId: string, authToken: string; }): Promise<Video[]> {
-	const url = new URL(YOUTUBE_URLS.playlist);
+	try {
+		const url = new URL(YOUTUBE_URLS.playlist);
 
-	url.searchParams.append('part', 'snippet');
-	url.searchParams.append('part', 'id');
-	url.searchParams.append('maxResults', '5');
-	url.searchParams.append('playlistId', params.uploadsPlayListId);
+		url.searchParams.append('part', 'snippet');
+		url.searchParams.append('part', 'id');
+		url.searchParams.append('maxResults', '5');
+		url.searchParams.append('playlistId', params.uploadsPlayListId);
 
-	const headers = new Headers();
-	headers.set('Accept', 'application/json');
-	headers.set('Authorization', 'Bearer ' + params.authToken);
+		const headers = new Headers();
+		headers.set('Accept', 'application/json');
+		headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	const res: any = await fetch(url.toString(), { method: 'GET', headers });
-	const data: any = await res.json();
+		const res: any = await fetch(url.toString(), { method: 'GET', headers });
+		const data: any = await res.json();
 
-	if (data) {
-		return data.items.map((item: any): Video => {
-			const { snippet } = item;
+		if (data) {
+			return data.items.map((item: any): Video => {
+				const { snippet } = item;
 
-			return {
-				id: snippet.resourceId.videoId,
-				title: snippet.title,
-				publishedAt: snippet.publishedAt,
-				thumbnailUrl: snippet.thumbnails.default.url
-			};
-		});
-	} else {
-		throw new Error('Error occurred while fetching data');
+				return {
+					id: snippet.resourceId.videoId,
+					title: snippet.title,
+					publishedAt: snippet.publishedAt,
+					thumbnailUrl: snippet.thumbnails.default.url
+				};
+			});
+		} else {
+			throw new Error('Error occurred while fetching data');
+		}
+	} catch (err) {
+		console.error(err);
 	}
 };
 
 export async function getVideoStats(params: { videoId: string, authToken: string; }): Promise<VideoStats> {
-	const url = new URL(YOUTUBE_URLS.video);
+	try {
+		const url = new URL(YOUTUBE_URLS.video);
 
-	url.searchParams.append('part', 'statistics');
-	url.searchParams.append('id', params.videoId);
+		url.searchParams.append('part', 'statistics');
+		url.searchParams.append('id', params.videoId);
 
-	const headers = new Headers();
-	headers.set('Accept', 'application/json');
-	headers.set('Authorization', 'Bearer ' + params.authToken);
+		const headers = new Headers();
+		headers.set('Accept', 'application/json');
+		headers.set('Authorization', 'Bearer ' + params.authToken);
 
-	const res: any = await fetch(url.toString(), { method: 'GET', headers });
-	const data: any = await res.json();
+		const res: any = await fetch(url.toString(), { method: 'GET', headers });
+		const data: any = await res.json();
 
-	if (data) {
-		const { viewCount, likeCount, dislikeCount, commentCount } = data.items[0].statistics;
+		if (data) {
+			const { viewCount, likeCount, dislikeCount, commentCount } = data.items[0].statistics;
 
-		return {
-			viewCount: Number(viewCount),
-			likeCount: Number(likeCount),
-			dislikeCount: Number(dislikeCount),
-			commentCount: Number(commentCount)
-		};
-	} else {
-		throw new Error('Error occurred while fetching data');
+			return {
+				viewCount: Number(viewCount),
+				likeCount: Number(likeCount),
+				dislikeCount: Number(dislikeCount),
+				commentCount: Number(commentCount)
+			};
+		} else {
+			throw new Error('Error occurred while fetching data');
+		}
+	} catch (err) {
+		console.error(err);
 	}
 };

@@ -42,7 +42,9 @@ export const Home = (props: { authToken: string | null, searchState: any; }) => 
                     <div className="col-md-7">
                         <form className="d-flex mt-5 mx-3" onSubmit={handleSubmit}>
                             <input onChange={handleChange} value={query} className="form-control me-2 rounded-0 border border-2 border-secondary" type="search" placeholder="CHANNEL NAME" aria-label="Search" style={{ fontWeight: 500, letterSpacing: 1 }} />
-                            <button className="btn btn-outline-danger rounded-0 border border-danger border-2" type="submit" style={{ fontWeight: 500, letterSpacing: 1 }}>SEARCH</button>
+                            <button className="btn btn-outline-danger rounded-0 border border-danger border-2 text-uppercase" type="submit" style={{ fontWeight: 500, letterSpacing: 1 }}>
+                                Search
+                            </button>
                         </form>
                         <div className="mt-1 ms-3">
                             <small className="text-muted fst-italic">*Youtube Data API has a limited daily quota, use it carefully.</small>
