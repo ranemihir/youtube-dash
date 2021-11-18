@@ -19,12 +19,12 @@ export function getOverallAnalytics(channel: Channel, videos: Video[]): OverallA
     const reach: number = ((likeCount + dislikeCount + commentCount) / viewCount);
 
     return {
-        viewCount: viewCount.toLocaleString(),
-        likeCount: likeCount.toLocaleString(),
-        dislikeCount: dislikeCount.toLocaleString(),
-        commentCount: commentCount.toLocaleString(),
-        engagementRate: engagementRate.toFixed(2) + '%',
-        reach: reach.toLocaleString()
+        'View Count': viewCount.toLocaleString(),
+        'Like Count': likeCount.toLocaleString(),
+        'Dislike Count': dislikeCount.toLocaleString(),
+        'Comment Count': commentCount.toLocaleString(),
+        'Engagement Rate': engagementRate.toFixed(2) + '%',
+        'Reach': reach.toLocaleString()
     };
 };
 

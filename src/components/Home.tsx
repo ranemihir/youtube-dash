@@ -24,13 +24,24 @@ export const Home = (props: { authToken: string | null, searchState: any; }) => 
 
     return (
         <>
-            <div className='container-fluid bg-light border-bottom' style={{ height: 240 }}>
-                <div className="row justify-content-center">
-                    <div className="col-md-7 mt-5">
+            <div className='container-fluid bg-light border-bottom' style={{ height: 320 }}>
+                <div className="row justify-content-center pt-5">
+                    <div className="col-md-7 my-3 d-flex justify-content-center align-items-center">
+                        <img src="/youtube-icon.svg" alt="YouTube Logo" width='60' />
+                        <div className="vr mx-4"></div>
+                        <h6 className="display-6 text-uppercase d-inline-block pt-1" style={{
+                            letterSpacing: 16,
+                            fontWeight: 100
+                        }}>Dashboard</h6>
+                    </div>
+                    <div className="col-md-7">
                         <form className="d-flex mt-5 mx-3" onSubmit={handleSubmit}>
                             <input onChange={handleChange} value={query} className="form-control me-2 rounded-0 border border-2 border-secondary" type="search" placeholder="CHANNEL NAME" aria-label="Search" style={{ fontWeight: 500, letterSpacing: 1 }} />
                             <button className="btn btn-outline-danger rounded-0 border border-danger border-2" type="submit" style={{ fontWeight: 500, letterSpacing: 1 }}>SEARCH</button>
                         </form>
+                        <div className="mt-1 ms-3">
+                            <small className="text-muted fst-italic">*Youtube Data API has a limited daily quota, use it carefully.</small>
+                        </div>
                     </div>
                 </div>
             </div>

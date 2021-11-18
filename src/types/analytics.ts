@@ -1,17 +1,17 @@
 export type OverallAnalytics = {
-    viewCount: string;
-    likeCount: string;
-    dislikeCount: string;
-    commentCount: string;
-    engagementRate: string;
-    reach: string;
+    'View Count': string;
+    'Like Count': string;
+    'Dislike Count': string;
+    'Comment Count': string;
+    'Engagement Rate': string;
+    'Reach': string;
 };
 
-export type ChartDataPoints = {
-    viewCounts: number[],
-    likeCounts: number[],
-    dislikeCounts: number[],
-    commentCounts: number[],
-    engagementRates: number[],
+export interface ChartDataPoints {
+    viewCounts: number[];
+    likeCounts: number[];
+    dislikeCounts: number[];
+    commentCounts: number[];
+    engagementRates: number[];
     reach: number[];
 };

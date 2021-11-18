@@ -1,20 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CurrentUserState } from "../types";
 import { GoogleSignIn } from "./GoogleSignIn";
 import { GoogleSignOut } from "./GoogleSignOut";
 
 export const NavBar = (props: { currentUserState: CurrentUserState, currentUserActions: any; }) => {
+    const { pathname } = useLocation();
+
     return (
         <nav className="navbar navbar-light bg-white border-bottom shadow-sm">
             <div className="container-fluid px-3">
-                <Link className="navbar-brand d-flex flex-rw align-items-center" to='/'>
-                    <img src="/youtube-logo.png" alt="YouTube Logo" width='48' />
-                    <div className="vr ms-2 me-3"></div>
-                    <span style={{
-                        letterSpacing: 3,
-                        fontWeight: 300
-                    }}>DASHBOARD</span>
-                </Link>
+                {
+                    (pathname && pathname !== '/') &&
+                    <Link className="navbar-brand d-flex flex-rw align-items-center" to='/'>
+                        <img src="/youtube-icon.svg" alt="YouTube Logo" width='40' />
+                        <div className="vr ms-3 me-3"></div>
+                        <span style={{
+                            letterSpacing: 3,
+                            fontWeight: 300
+                        }}>DASHBOARD</span>
+                    </Link>
+                }
                 {
                     (props.currentUserState.data && props.currentUserState.data != null)
                         ? (

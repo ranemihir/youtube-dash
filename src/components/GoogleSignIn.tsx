@@ -25,7 +25,7 @@ export const GoogleSignIn = (props: { currentUserActions: any; }) => {
     return (
         <GoogleLogin
             clientId='738803615765-8n769e8kuitvs86nmab9fpssa8t57pad.apps.googleusercontent.com'
-            buttonText='Sign In with Google'
+            buttonText='Sign In'
             theme='dark'
             // isSignedIn={true}
             scope='https://www.googleapis.com/auth/youtube.readonly'
