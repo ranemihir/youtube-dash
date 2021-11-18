@@ -109,7 +109,7 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                     (dataPoints && dataPoints != null) &&
                     dataPoints.map((chartDataPoint: DataPoint) => {
                         return (
-                            <div className="col-6">
+                            <div className="col-4">
                                 <ChartCard key={chartDataPoint.name} dataPoint={chartDataPoint} />
                             </div>
                         );

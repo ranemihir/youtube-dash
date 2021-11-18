@@ -39,7 +39,7 @@ export function getOverallAnalytics(channelDetails: ChannelDetails, videos: Vide
 
         return {
             name,
-            value: value.toLocaleString()
+            value: value.toLocaleString() + ((name === AnalyticsNames.engagementRate && '%') || '')
         };
     });
 };
