@@ -1,5 +1,7 @@
-export const OverallAnalyticsCard = (props: { name: string, value: string; }) => {
-    const { name, value } = props;
+import { OverallAnalytics } from "../types";
+
+export const OverallAnalyticsCard = (props: { overallAnalytics: OverallAnalytics; }) => {
+    const { name, value } = props.overallAnalytics;
 
     return (
         <div className="card border-0 shadow">

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChannelDetails, Video, VideoStats, Channel, OverallAnalytics } from "../types";
+import { ChannelDetails, Video, VideoStats, Channel, OverallAnalytics, DataPoint } from "../types";
 import * as youtubeService from './../services/youtube';
 import * as analyticsService from './../services/analytics';
-import { ChartDataPoints } from "../types/analytics";
 import { OverallAnalyticsCard } from "./OverallAnalyticsCard";
+import { ChartCard } from "./ChartCard";
 
 
 export const Dashboard = (props: { authToken: string | null, getChannel: (channelId: string) => Channel; }) => {
@@ -14,9 +14,9 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
 
     const [channel, setChannel] = useState<Channel>();
     const [videos, setVideos] = useState<Video[]>([]);
-    const [overallAnalytics, setOverallAnalytics] = useState<OverallAnalytics>();
+    const [overallAnalytics, setOverallAnalytics] = useState<OverallAnalytics[]>();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [chartDataPoints, setChartDataPoints] = useState<ChartDataPoints>();
+    const [chartDataPoints, setChartDataPoints] = useState<DataPoint[]>();
 
     const channelData: Channel = props.getChannel(channelId);
 
@@ -56,13 +56,13 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
 
             setVideos(videosData);
 
-            const overallAnalayticsData: OverallAnalytics = analyticsService.getOverallAnalytics(channel, videos);
-            const chartDataPointsData: ChartDataPoints = analyticsService.getDataPoints(channel, videos);
+            const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channel, videos);
+            const chartDataPointsData: DataPoint[] = analyticsService.getDataPoints(channel, videos);
 
             setOverallAnalytics(overallAnalayticsData);
             setChartDataPoints(chartDataPointsData);
         })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelId, authToken]);
 
     return (
@@ -93,11 +93,10 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                         (overallAnalytics && overallAnalytics != null) &&
                         <div className="row">
                             {
-                                Object.entries(overallAnalytics).map((entry: string[]) => {
-                                    const [key, value] = entry;
+                                overallAnalytics.map((overallAnalyticsData: OverallAnalytics) => {
                                     return (
                                         <div className="col-3">
-                                            <OverallAnalyticsCard name={key} value={value} />
+                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalaytics={overallAnalyticsData} />
                                         </div>
                                     );
                                 })
@@ -105,6 +104,17 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                         </div>
                     }
                 </div>
+            </div>
+            <div className="row">
+                {
+                    chartDataPoints.map((chartDataPoint: DataPoint) => {
+                        return (
+                            <div className="col-6">
+                                <ChartCard key={chartDataPoint.name} dataPoint={chartDataPoint} />
+                            </div>
+                        );
+                    })
+                }
             </div>
         </div>
     );

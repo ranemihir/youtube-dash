@@ -1,54 +1,77 @@
-import { Channel, OverallAnalytics, Video } from "../types";
-import { ChartDataPoints } from "../types/analytics";
+import { Channel, OverallAnalytics, Video, DataPoint } from "../types";
 
-
-export function getOverallAnalytics(channel: Channel, videos: Video[]): OverallAnalytics {
-    const { viewCount, likeCount, dislikeCount, commentCount } = videos.reduce((acc, video: Video) => ({
-        viewCount: acc.viewCount + video.stats.viewCount,
-        likeCount: acc.likeCount + video.stats.likeCount,
-        dislikeCount: acc.dislikeCount + video.stats.dislikeCount,
-        commentCount: acc.commentCount + video.stats.commentCount
-    }), {
-        viewCount: 0,
-        likeCount: 0,
-        dislikeCount: 0,
-        commentCount: 0
-    });
-
-    const engagementRate: number = ((likeCount + dislikeCount + commentCount) / channel.details.subscriberCount);
-    const reach: number = ((likeCount + dislikeCount + commentCount) / viewCount);
-
-    return {
-        'View Count': viewCount.toLocaleString(),
-        'Like Count': likeCount.toLocaleString(),
-        'Dislike Count': dislikeCount.toLocaleString(),
-        'Comment Count': commentCount.toLocaleString(),
-        'Engagement Rate': engagementRate.toFixed(2) + '%',
-        'Reach': reach.toLocaleString()
-    };
+enum AnalyticsNames {
+    viewCount = 'Views',
+    likeCount = 'Likes',
+    dislikeCount = 'Dislikes',
+    commentCount = 'Comments',
+    engagementRate = 'Engagement Rate',
+    reach = 'Reach'
 };
 
-export function getDataPoints(channel: Channel, videos: Video[]): ChartDataPoints {
-    return videos.reduce((acc, video: Video): ChartDataPoints => {
+export function getOverallAnalytics(channel: Channel, videos: Video[]): OverallAnalytics[] {
+    const overallAnalyticsObj: any = videos.reduce((acc, video: Video) => ({
+        ...overallAnalyticsObj,
+        [AnalyticsNames.viewCount]: acc[AnalyticsNames.viewCount] + video.stats.viewCount,
+        [AnalyticsNames.likeCount]: acc[AnalyticsNames.likeCount] + video.stats.likeCount,
+        [AnalyticsNames.dislikeCount]: acc[AnalyticsNames.dislikeCount] + video.stats.dislikeCount,
+        [AnalyticsNames.commentCount]: acc[AnalyticsNames.commentCount] + video.stats.commentCount
+    }), {
+        [AnalyticsNames.viewCount]: 0,
+        [AnalyticsNames.likeCount]: 0,
+        [AnalyticsNames.dislikeCount]: 0,
+        [AnalyticsNames.commentCount]: 0,
+        [AnalyticsNames.engagementRate]: 0,
+        [AnalyticsNames.reach]: 0
+    });
+
+    const viewCount: number = overallAnalyticsObj[AnalyticsNames.viewCount];
+    const likeCount: number = overallAnalyticsObj[AnalyticsNames.likeCount];
+    const dislikeCount: number = overallAnalyticsObj[AnalyticsNames.dislikeCount];
+    const commentCount: number = overallAnalyticsObj[AnalyticsNames.commentCount];
+
+    overallAnalyticsObj[AnalyticsNames.engagementRate] = ((likeCount + dislikeCount + commentCount) / channel.details.subscriberCount);
+    overallAnalyticsObj[AnalyticsNames.reach] = ((likeCount + dislikeCount + commentCount) / viewCount);
+
+    return Object.entries(overallAnalyticsObj).map((entry): OverallAnalytics => {
+        const [name, value] = entry;
+
+        return {
+            name,
+            value: value.toLocaleString()
+        };
+    });
+};
+
+export function getDataPoints(channel: Channel, videos: Video[]): DataPoint[] {
+    const dataPointObj: any = videos.reduce((acc, video: Video) => {
         const { viewCount, likeCount, dislikeCount, commentCount } = video.stats;
         const engagementRate: number = ((likeCount + dislikeCount + commentCount) / channel.details.subscriberCount);
         const reach: number = ((likeCount + dislikeCount + commentCount) / viewCount);
 
-
         return {
-            viewCounts: acc.viewCounts.concat(viewCount),
-            likeCounts: acc.likeCounts.concat(likeCount),
-            dislikeCounts: acc.dislikeCounts.concat(dislikeCount),
-            commentCounts: acc.commentCounts.concat(commentCount),
-            engagementRates: acc.engagementRates.concat(engagementRate),
-            reach: acc.reach.concat(reach)
+            [AnalyticsNames.viewCount]: acc[AnalyticsNames.viewCount].concat(viewCount),
+            [AnalyticsNames.likeCount]: acc[AnalyticsNames.likeCount].concat(likeCount),
+            [AnalyticsNames.dislikeCount]: acc[AnalyticsNames.dislikeCount].concat(dislikeCount),
+            [AnalyticsNames.commentCount]: acc[AnalyticsNames.commentCount].concat(commentCount),
+            [AnalyticsNames.engagementRate]: acc[AnalyticsNames.engagementRate].concat(engagementRate),
+            [AnalyticsNames.reach]: acc[AnalyticsNames.reach].concat(reach)
         };
     }, {
-        viewCounts: [],
-        likeCounts: [],
-        dislikeCounts: [],
-        commentCounts: [],
-        engagementRates: [],
-        reach: []
+        [AnalyticsNames.viewCount]: [],
+        [AnalyticsNames.likeCount]: [],
+        [AnalyticsNames.dislikeCount]: [],
+        [AnalyticsNames.commentCount]: [],
+        [AnalyticsNames.engagementRate]: [],
+        [AnalyticsNames.reach]: []
+    });
+
+    return Object.entries(dataPointObj).map((entry): DataPoint => {
+        const [name, data] = entry;
+
+        return {
+            name,
+            data
+        };
     });
 };
