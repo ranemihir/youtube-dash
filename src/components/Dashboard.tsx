@@ -90,10 +90,14 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                         <div className="row">
                             {
                                 (overallAnalytics && overallAnalytics != null) &&
-                                overallAnalytics.map((overallAnalyticsData: OverallAnalytics) => {
+                                overallAnalytics.map((overallAnalyticsData: OverallAnalytics, i: number) => {
+
                                     return (
                                         <div className="col-3 mb-4">
-                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalytics={overallAnalyticsData} />
+                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalytics={{
+                                                ...overallAnalyticsData,
+                                                name: (((i < 4) && 'avg. ') || '') + overallAnalyticsData.name
+                                            }} />
                                         </div>
                                     );
                                 })
