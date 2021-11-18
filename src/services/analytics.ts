@@ -6,7 +6,9 @@ enum AnalyticsNames {
     dislikeCount = 'Dislikes',
     commentCount = 'Comments',
     engagementRate = 'Engagement Rate',
-    reach = 'Reach'
+    reach = 'Reach',
+    totalViews = 'Total Views',
+    uploadedVideos = 'Uploaded Videos'
 };
 
 export function getOverallAnalytics(channelDetails: ChannelDetails, videos: Video[]): OverallAnalytics[] {
@@ -16,14 +18,18 @@ export function getOverallAnalytics(channelDetails: ChannelDetails, videos: Vide
         [AnalyticsNames.dislikeCount]: acc[AnalyticsNames.dislikeCount] + video.stats.dislikeCount,
         [AnalyticsNames.commentCount]: acc[AnalyticsNames.commentCount] + video.stats.commentCount,
         [AnalyticsNames.engagementRate]: 0,
-        [AnalyticsNames.reach]: 0
+        [AnalyticsNames.reach]: 0,
+        [AnalyticsNames.totalViews]: 0,
+        [AnalyticsNames.uploadedVideos]: 0
     }), {
         [AnalyticsNames.viewCount]: 0,
         [AnalyticsNames.likeCount]: 0,
         [AnalyticsNames.dislikeCount]: 0,
         [AnalyticsNames.commentCount]: 0,
         [AnalyticsNames.engagementRate]: 0,
-        [AnalyticsNames.reach]: 0
+        [AnalyticsNames.reach]: 0,
+        [AnalyticsNames.totalViews]: 0,
+        [AnalyticsNames.uploadedVideos]: 0
     });
 
     const viewCount: number = overallAnalyticsObj[AnalyticsNames.viewCount];
@@ -33,6 +39,8 @@ export function getOverallAnalytics(channelDetails: ChannelDetails, videos: Vide
 
     overallAnalyticsObj[AnalyticsNames.engagementRate] = ((likeCount + dislikeCount + commentCount) / channelDetails.subscriberCount);
     overallAnalyticsObj[AnalyticsNames.reach] = ((likeCount + dislikeCount + commentCount) / viewCount);
+    overallAnalyticsObj[AnalyticsNames.totalViews] = channelDetails.totalViewCount;
+    overallAnalyticsObj[AnalyticsNames.uploadedVideos] = channelDetails.videoCount;
 
     return Object.entries(overallAnalyticsObj).map((entry): OverallAnalytics => {
         const [name, value] = entry;

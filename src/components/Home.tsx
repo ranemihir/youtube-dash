@@ -27,7 +27,12 @@ export const Home = (props: { authToken: string | null, searchState: any; }) => 
             <div className='container-fluid bg-light border-bottom' style={{ height: 320 }}>
                 <div className="row justify-content-center pt-5">
                     <div className="col-md-7 my-3 d-flex justify-content-center align-items-center">
-                        <img src="/youtube-icon.svg" alt="YouTube Logo" width='60' />
+                        <i className="bi bi-youtube"
+                            style={{
+                                color: 'red',
+                                fontSize: '3.6rem'
+                            }} />
+
                         <div className="vr mx-4"></div>
                         <h6 className="display-6 text-uppercase d-inline-block pt-1" style={{
                             letterSpacing: 16,

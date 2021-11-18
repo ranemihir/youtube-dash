@@ -64,29 +64,27 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
     }, []);
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid p-4">
             <div className="row">
-                <div className="col-3">
+                <div className="col-4">
                     {
                         (channel && channel != null && channel.details) &&
-                        <div className="card">
-                            <img src={channel.thumbnailUrl} className="card-img-top rounded-circle p-4" alt={channel.name + ' thumbnail'} />
+                        <div className="card rounded-0 shadow-sm d-flex flex-row align-items-center">
+                            <img src={channel.thumbnailUrl} className="img-thumbnail rounded-circle m-4" alt={channel.name + ' thumbnail'} style={{
+                                width: 148,
+                                height: 148
+                            }} />
                             <div className="card-body">
-                                <h3 className="card-title">{channel.name}</h3>
+                                <h2 className="card-title fw-bolder">{channel.name}</h2>
                                 <p className="card-text">
-                                    Subscribers <strong>{channel.details.subscriberCount.toLocaleString()}</strong>
-                                </p>
-                                <p className="card-text">
-                                    Total Views <strong>{channel.details.totalViewCount.toLocaleString()}</strong>
-                                </p>
-                                <p className="card-text">
-                                    Uploaded Videos <strong>{channel.details.videoCount.toLocaleString()}</strong>
+                                    <i className="bi bi-people-fill me-2"></i>
+                                    <strong>{channel.details.subscriberCount.toLocaleString()}</strong>
                                 </p>
                             </div>
                         </div>
                     }
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                     {
                         (overallAnalytics && overallAnalytics != null) &&
                         <div className="row">
@@ -94,7 +92,7 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                                 (overallAnalytics && overallAnalytics != null) &&
                                 overallAnalytics.map((overallAnalyticsData: OverallAnalytics) => {
                                     return (
-                                        <div className="col-3">
+                                        <div className="col-3 mb-4">
                                             <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalytics={overallAnalyticsData} />
                                         </div>
                                     );
@@ -104,12 +102,13 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                     }
                 </div>
             </div>
-            <div className="row">
+            <hr className="dropdown-divider mb-4 text-muted" />
+            <div className="row mb-4">
                 {
                     (dataPoints && dataPoints != null) &&
                     dataPoints.map((chartDataPoint: DataPoint) => {
                         return (
-                            <div className="col-4">
+                            <div className="col-4 mb-4">
                                 <ChartCard key={chartDataPoint.name} dataPoint={chartDataPoint} />
                             </div>
                         );

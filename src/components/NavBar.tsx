@@ -12,7 +12,11 @@ export const NavBar = (props: { currentUserState: CurrentUserState, currentUserA
                 {
                     (pathname && pathname !== '/') &&
                     <Link className="navbar-brand d-flex flex-rw align-items-center" to='/'>
-                        <img src="/youtube-icon.svg" alt="YouTube Logo" width='40' />
+                        <i className="bi bi-youtube"
+                            style={{
+                                color: 'red',
+                                fontSize: '2rem'
+                            }} />
                         <div className="vr ms-3 me-3"></div>
                         <span style={{
                             letterSpacing: 3,

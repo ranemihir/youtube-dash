@@ -1,6 +1,7 @@
-import { CategoryScale, Chart, ChartItem, LinearScale, LineController, LineElement, PointElement } from 'chart.js';
+import { CategoryScale, Chart, ChartItem, LinearScale, LineElement, PointElement, ScatterController } from 'chart.js';
 import { useEffect } from 'react';
 import { DataPoint } from '../types';
+
 
 export const ChartCard = (props: { dataPoint: DataPoint; }) => {
     const { name, data } = props.dataPoint;
@@ -9,14 +10,16 @@ export const ChartCard = (props: { dataPoint: DataPoint; }) => {
     useEffect(() => {
         const ctx = document.getElementById(name) as ChartItem;
 
-        Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement);
+        Chart.register(ScatterController, CategoryScale, LinearScale, PointElement, LineElement);
 
         const chart = new Chart(ctx, {
-            type: 'line',
+            type: 'scatter',
             data: {
                 datasets: [{
-                    data, 
-                    
+                    label: name,
+                    pointRadius: 4,
+                    pointBackgroundColor: "rgba(0,0,255,1)",
+                    data,
                 }]
             }
         });
@@ -28,9 +31,9 @@ export const ChartCard = (props: { dataPoint: DataPoint; }) => {
     }, []);
 
     return (
-        <div className="card">
-            <div className='card-body'>
-                <h5 className='card-title'>{name}</h5>
+        <div className="card rounded-0 shadow-sm">
+            <div className='card-body text-center'>
+                <h6 className='card-title pb-2'>{name + ' / Video'}</h6>
                 <canvas id={name}></canvas>
             </div>
         </div>
