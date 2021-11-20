@@ -28,7 +28,7 @@ export const ChartCard = (props: { dataPoint: DataPoint; }) => {
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map((v: number, i: number) => i),
+                labels: data.map((v: number, i: number) => (i + 1)),
                 datasets: [{
                     pointRadius: 3,
                     pointBackgroundColor: hexToRGB(color, 1),
