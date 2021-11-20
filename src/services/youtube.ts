@@ -170,7 +170,7 @@ export async function getPlaylistItems(params: { uploadsPlayListId: string, auth
 
 		url.searchParams.append('part', 'snippet');
 		url.searchParams.append('part', 'id');
-		url.searchParams.append('maxResults', '5');
+		url.searchParams.append('maxResults', '50');
 		url.searchParams.append('playlistId', params.uploadsPlayListId);
 
 		const headers = new Headers();

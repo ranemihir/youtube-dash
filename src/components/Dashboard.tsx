@@ -49,8 +49,8 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
 
                 setVideos(videosData);
 
-                const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channel.details, videosData);
-                const chartDataPoints: DataPoint[] = analyticsService.getDataPoints(channel.details, videosData);
+                const overallAnalayticsData: OverallAnalytics[] = analyticsService.getOverallAnalytics(channelData.details, videosData);
+                const chartDataPoints: DataPoint[] = analyticsService.getDataPoints(channelData.details, videosData);
 
                 setOverallAnalytics(overallAnalayticsData);
                 setDataPoints(chartDataPoints);
@@ -89,10 +89,9 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
                             {
                                 (overallAnalytics && overallAnalytics != null) &&
                                 overallAnalytics.map((overallAnalyticsData: OverallAnalytics, i: number) => {
-
                                     return (
                                         <div className="col-3 mb-4">
-                                            <OverallAnalyticsCard key={overallAnalyticsData.name} overallAnalytics={{
+                                            <OverallAnalyticsCard key={i} overallAnalytics={{
                                                 ...overallAnalyticsData,
                                                 name: (((i < 4) && 'avg. ') || '') + overallAnalyticsData.name
                                             }} />
@@ -111,10 +110,10 @@ export const Dashboard = (props: { authToken: string | null, getChannel: (channe
             <div className="row mb-4">
                 {
                     (dataPoints && dataPoints != null) &&
-                    dataPoints.map((chartDataPoint: DataPoint) => {
+                    dataPoints.map((chartDataPoint: DataPoint, i: number) => {
                         return (
                             <div className="col-4 mb-4">
-                                <ChartCard key={chartDataPoint.name} dataPoint={chartDataPoint} />
+                                <ChartCard key={i} dataPoint={chartDataPoint} />
                             </div>
                         );
                     })
