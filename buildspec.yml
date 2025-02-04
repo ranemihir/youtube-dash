@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo Installing node modules
+      - npm install
+
+  pre_build:
+    commands:
+      - Next step is to build the project
+
+  build:
+    commands:
+      - echo Building the project
+      - npm run build
+
+  post_build:
+    commands:
+      - echo Project is built successfully
+
+artifacts:
+  files:
+    - public/**/*
