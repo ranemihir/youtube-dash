@@ -10,7 +10,7 @@ phases:
 
   pre_build:
     commands:
-      - Next step is to build the project
+      - echo Next step is to build the project
 
   build:
     commands:
