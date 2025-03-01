@@ -25,4 +25,4 @@ artifacts:
   files:
     - "**/*"
   base-directory: "build"
-  name: /
+  name: "/"
